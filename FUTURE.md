@@ -1,0 +1,15 @@
+# Future / Out of Scope
+
+Ideas deliberately deferred. Not committed work.
+
+## Cut from initial plan (pull back if ahead of pace)
+
+- Evaluation harness (retrieval recall / MRR) — biggest resume differentiator, restore first
+- Hybrid retrieval (paragraph-reference override)
+- Persisted chat history (reload past conversations)
+
+## Deferred design notes
+
+- Question→chunks link: to support answer-caching (match new question to a past one,
+  reuse the chunks that answered it), the Questions table will eventually need to store
+  which chunks were used. Out of scope until Phase 6.
