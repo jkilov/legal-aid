@@ -1,9 +1,13 @@
-import AuthPage from "./pages/AuthPage";
+import { Outlet } from "react-router";
+
+//external imports
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
     <div>
-      <AuthPage />
+      <Outlet />
+      <Toaster />
     </div>
   );
 };

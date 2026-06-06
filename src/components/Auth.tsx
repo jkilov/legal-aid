@@ -2,7 +2,7 @@ import { useState } from "react";
 
 interface Props {
   title: string;
-  btnText: string;
+  btnText: React.ReactNode;
   btnFn: (email: string, password: string) => void;
 }
 const Auth = ({ title, btnText, btnFn }: Props) => {
@@ -10,12 +10,10 @@ const Auth = ({ title, btnText, btnFn }: Props) => {
   const [password, setPassword] = useState("");
 
   const handleSubmit = (email: string, password: string) => {
-    console.log("Data sent");
     btnFn(email, password);
+    setEmail("");
+    setPassword("");
   };
-
-  console.log("email", email);
-  console.log("pass", password);
 
   return (
     <div>
@@ -26,6 +24,7 @@ const Auth = ({ title, btnText, btnFn }: Props) => {
         name="email"
         id="email"
         onChange={(e) => setEmail(e.target.value)}
+        value={email}
       />
       <label htmlFor="password">Password: </label>
       <input
@@ -33,6 +32,7 @@ const Auth = ({ title, btnText, btnFn }: Props) => {
         name="password"
         id="password"
         onChange={(e) => setPassword(e.target.value)}
+        value={password}
       />
       <button
         type="button"

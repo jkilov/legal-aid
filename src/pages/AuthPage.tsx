@@ -1,46 +1,90 @@
 import Auth from "../components/Auth";
-import { createUser, signInUser } from "../supabase/auth";
+import { createUser, signInUser, signOutUser, signInGoogle } from "../lib/auth";
 import { useState } from "react";
+import { useAsyncFunction } from "../hooks/useAsyncFunction";
+import { useNavigate } from "react-router";
 
 type AuthType = "sign-in" | "create";
 
 const AuthPage = () => {
+  const navigate = useNavigate();
   const [authType, setAuthType] = useState<AuthType>("sign-in");
+  const [componentIdentity, setComponentIdentity] = useState(0);
+
+  const { isLoading, run } = useAsyncFunction();
 
   const handleSignIn = async (email: string, password: string) => {
-    const { data, error } = await signInUser(email, password);
-    console.log("sign in");
-    console.log("data: ", data);
-    console.log("error: ", error);
+    try {
+      await run(async () => {
+        const { data, error } = await signInUser(email, password);
+
+        if (error) throw new Error(error.message);
+
+        console.log("signed in", data);
+        navigate("/");
+        return data;
+      });
+    } catch (err) {
+      console.log(err instanceof Error ? err.message : "Something when wrong");
+    }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      const { data, error } = await run(async () => await signInGoogle());
+      console.log("Data", data);
+      if (error) {
+        return "There was an error";
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      console.log(message);
+    }
   };
 
   const handleCreateUser = async (email: string, password: string) => {
-    const { data, error } = await createUser(email, password);
-    console.log("create");
-    console.log("data: ", data);
-    console.log("error: ", error);
+    await run(async () => {
+      const { data, error } = await createUser(email, password);
+      if (error) {
+        throw new Error(error.message);
+      }
+      console.log("account created", data);
+      return data;
+    });
+  };
+
+  const handleSignOut = async () => {
+    await signOutUser();
+    setComponentIdentity((prev) => prev + 1);
   };
 
   return (
-    <div>
+    <div key={componentIdentity}>
       <h1>Welcome to Legal-aid</h1>
       {authType === "sign-in" ? (
         <div>
           <Auth
             title="Login to your account"
-            btnText="Sign In"
+            btnText={isLoading ? "Loading" : "Sign In"}
             btnFn={handleSignIn}
           />
           <p>
             if you do not have an account{" "}
             <span onClick={() => setAuthType("create")}>create one now.</span>
           </p>
+          <button type="button" onClick={handleSignInWithGoogle}>
+            Google
+          </button>
+          <button type="button" onClick={handleSignOut}>
+            Sign out
+          </button>
         </div>
       ) : (
         <div>
           <Auth
             title="Create an account"
-            btnText="Create"
+            btnText={isLoading ? "Loading" : "Create"}
             btnFn={handleCreateUser}
           />
           <p>
