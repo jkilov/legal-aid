@@ -25,7 +25,7 @@ const AuthPage = () => {
         return data;
       });
     } catch (err) {
-      console.log(err.message);
+      console.log(err instanceof Error ? err.message : "Something when wrong");
     }
   };
 
@@ -47,7 +47,7 @@ const AuthPage = () => {
     await run(async () => {
       const { data, error } = await createUser(email, password);
       if (error) {
-        throw new Error(error.message, error.cause);
+        throw new Error(error.message);
       }
       console.log("account created", data);
       return data;
