@@ -1,0 +1,6 @@
+{
+  "hints": {
+    "typescript-config/is-valid": "off",
+    "typescript-config/no-comments": "off"
+  }
+}
