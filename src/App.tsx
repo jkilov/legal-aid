@@ -1,7 +1,6 @@
-import { Outlet } from "react-router";
-
 //external imports
 import { Toaster } from "sonner";
+import { Outlet } from "react-router";
 
 const App = () => {
   return (

@@ -3,6 +3,7 @@ import { supabase } from "../lib/client";
 import HomePage from "../pages/HomePage";
 import AuthPage from "../pages/AuthPage";
 import App from "../App";
+import ProtectedLayout from "../layouts/ProtectedLayout";
 
 const requireAuth = async () => {
   const {
@@ -22,13 +23,18 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        index: true,
-        element: <HomePage />,
-        loader: requireAuth,
-      },
-      {
         path: "login",
         element: <AuthPage />,
+      },
+      {
+        element: <ProtectedLayout />,
+        loader: requireAuth,
+        children: [
+          {
+            index: true,
+            element: <HomePage />,
+          },
+        ],
       },
     ],
   },
