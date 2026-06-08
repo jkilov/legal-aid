@@ -1,15 +1,15 @@
 import Auth from "../components/Auth";
-import { createUser, signInUser, signOutUser, signInGoogle } from "../lib/auth";
+import { createUser, signInUser, signInGoogle } from "../lib/auth";
 import { useState } from "react";
 import { useAsyncFunction } from "../hooks/useAsyncFunction";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 type AuthType = "sign-in" | "create";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const [authType, setAuthType] = useState<AuthType>("sign-in");
-  const [componentIdentity, setComponentIdentity] = useState(0);
 
   const { isLoading, run } = useAsyncFunction();
 
@@ -20,26 +20,26 @@ const AuthPage = () => {
 
         if (error) throw new Error(error.message);
 
-        console.log("signed in", data);
         navigate("/");
         return data;
       });
     } catch (err) {
-      console.log(err instanceof Error ? err.message : "Something when wrong");
+      console.error(
+        toast.error(err instanceof Error ? err.message : "Something when wrong")
+      );
     }
   };
 
   const handleSignInWithGoogle = async () => {
     try {
-      const { data, error } = await run(async () => await signInGoogle());
-      console.log("Data", data);
+      const { error } = await run(async () => await signInGoogle());
       if (error) {
         return "There was an error";
       }
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
-      console.log(message);
+      toast.error(message);
     }
   };
 
@@ -49,18 +49,12 @@ const AuthPage = () => {
       if (error) {
         throw new Error(error.message);
       }
-      console.log("account created", data);
       return data;
     });
   };
 
-  const handleSignOut = async () => {
-    await signOutUser();
-    setComponentIdentity((prev) => prev + 1);
-  };
-
   return (
-    <div key={componentIdentity}>
+    <div>
       <h1>Welcome to Legal-aid</h1>
       {authType === "sign-in" ? (
         <div>
@@ -75,9 +69,6 @@ const AuthPage = () => {
           </p>
           <button type="button" onClick={handleSignInWithGoogle}>
             Google
-          </button>
-          <button type="button" onClick={handleSignOut}>
-            Sign out
           </button>
         </div>
       ) : (
