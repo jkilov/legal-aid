@@ -31,22 +31,25 @@ app.post('/placeholder', (req: Request, res: Response) => {
 })
 
 app.post('/authcheck', async(req, res)=> {
+    if (!req.headers) {
+        return res.status(401).send("No Auth Headers Exist")
+    }
     const authHeader = req.headers.authorization
-    const token = authHeader?.replace("Bearer ", "")
-    const test = "eyJhbGciOiJFUzI1NiIsImtpZCI6ImI3ZjI5Y2UwLWY0MzUtNGI2Zi05ZmQ3LTg1ZmZlNzQyZTlkYiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2ZkeGhodmJ4bHZlc3p5cWNsZ254LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIyNjNhYzcyZi04YjRkLTQyMmUtODRmYS0yZjNiZTQ2NGJlYjYiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgxMDgyMjQ0LCJpYXQiOjE3ODEwNzg2NDQsImVtYWlsIjoiam9zaC5raWxvdkBnbWFpbC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsIjoiam9zaC5raWxvdkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGhvbmVfdmVyaWZpZWQiOmZhbHNlLCJzdWIiOiIyNjNhYzcyZi04YjRkLTQyMmUtODRmYS0yZjNiZTQ2NGJlYjYifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc4MTA3ODY0NH1dLCJzZXNzaW9uX2lkIjoiYjMwZWUwZTgtMmM0Yi00MDU3LWEyMjAtNmRlOTkwOWYxYTIzIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.0enZOObs5ScaBjVuFYkyZe13fy3gvoCJ_tdSB7iOb98sndJ1co6HE0xgWxhkcTlRtmqbCEJDXYAqpyXsdwxyVw"
 
-    console.log({"url": authHeader})
-if (!authHeader) {
-    return res.status(401).send("Authorization token missing")
-} else if (!authHeader.startsWith("Bearer ")) {
-    return res.status(401).send("Unauthorized access")
-}
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).send("Not Authenticated")
+} 
+
+const token = authHeader.replace("Bearer ", "")
+
 const {data: {user}, error} = await supabase.auth.getUser(token)
 if (error || !user) {
     return res.status(401).send("Invalid token")
 }
 res.status(200).json({user,})
 })
+
+
 
 app.listen(port, () => {
     console.log(`Express listening on port ${port}`)
