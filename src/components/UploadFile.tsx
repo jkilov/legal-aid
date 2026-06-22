@@ -30,6 +30,8 @@ const UploadFile = () => {
     toast.success(`${file.name} selected`);
   };
 
+  //TODO: move handleUploadFile to server side processing
+
   const handleUploadFile = async (
     userId: string,
     filePath: string,
