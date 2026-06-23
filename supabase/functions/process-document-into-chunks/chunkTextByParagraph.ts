@@ -13,10 +13,10 @@ const supabase = createClient(
   supabaseKey
 )
 
-export const chunkTextByParagraph = async(documentId: string, text: string[], paragraphCount) => {
+export const chunkTextByParagraph = async(documentId: string, text: string[], paragraphCount: number) => {
     let chunkOrder = 0
 
-    try {
+
 
         for (let i = 0; i < text.length; i+= paragraphCount ) {
 ++chunkOrder
@@ -26,7 +26,7 @@ if (chunkSlice.length <= 0) return
 
 const chunk = chunkSlice.join(" ")
 
-const {data: chunkedData, error: chunkedError} = await supabase
+const { error: chunkedError} = await supabase
 .from("chunks")
 .insert({
     document_id: documentId,
@@ -40,9 +40,7 @@ const {data: chunkedData, error: chunkedError} = await supabase
 if (chunkedError) throw new Error(chunkedError)
 
         }
-        
-    } catch (error) {
-        throw new Error(error instanceof Error ? error : "Something went wrong", { cause: error })
-    }
+        console.log("chunked by paragraph")
+
 
 }

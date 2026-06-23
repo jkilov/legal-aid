@@ -18,7 +18,7 @@ const supabase = createClient(
 export const chunkTextBywordCount = async(documentId: string, text: string[], wordCount: number) => {
     let chunkCount = 0
   
-  try {
+
   
   
   for (let i = 0; i < text.length; i += wordCount) {
@@ -29,7 +29,7 @@ export const chunkTextBywordCount = async(documentId: string, text: string[], wo
   
     const chunk = chunkGrouping.join(" ")
   
-    const {data: chunkedData, error: chunkedError} = await supabase
+    const {error: chunkedError} = await supabase
     .from("chunks")
     .insert({
       document_id: documentId,
@@ -40,16 +40,14 @@ export const chunkTextBywordCount = async(documentId: string, text: string[], wo
     })
   
     if (chunkedError) {
-      throw new Error(chunkedError || "No data chunked")
+      console.error("Chunk insert failed: " + chunkedError)
+      throw new Error(chunkedError.message)
     }
   
   
   }
   
-  return
-  } catch (error) {
-    throw new error( error instanceof Error ? error : "something went wrong")
-  }
-  
+
+  console.log({"chunk method": Word})
   }
   

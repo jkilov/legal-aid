@@ -41,8 +41,8 @@ Deno.serve(async (req) => {
 //const documentId = body.documentId
 
 const userId = "98eb8ceb-1c2f-4677-a116-0df30f427cf6"
-const filePath = "pedlar_contract.pdf"
-const documentId ="93032e77-768e-46aa-a158-4dabbe99f496"
+const filePath = "fake_contract.pdf"
+const documentId ="25c489a4-de5b-4756-b519-13dd1d150b6c"
 
 
 
@@ -67,52 +67,23 @@ if (downloadError || !downloadedFile) {
 
 
 const pdfBytes = await downloadedFile.arrayBuffer()
-
-
-
 const pdf = await getDocumentProxy(new Uint8Array(pdfBytes))
-
-
 const {totalPages, text} = await extractText(pdf, {mergePages: true})
 
-console.log("textTest", text.length)
+//chunks document
 
 if (text.length === 0) {
-  throw new Error("There was an issue extracting the documents text")
+  throw new Error("There was an issue processing your document")
 }
+const textToWordsArr = text.split (" ")
+  await chunkTextBywordCount(documentId, textToWordsArr, 300)
+    //TODO: add chunking function by paragraph
+  //chunkTextByParagraph(documentId, textArr, 4)
 
 
-
-console.log("total Page", totalPages)
-
-
-const textArr = text.split(/\n\s*\n/)
-
-
-if (textArr.length === 1) {
-  const textToWordsArr = textArr.split (" ")
-  //Creates an array with each element a word
-  chunkTextBywordCount(documentId, textToWordsArr, 300)
-} else {
-  //add chunking function by paragraph
-  chunkTextByParagraph(documentId, textArr, 4)
-
-}
-
-
-
-
-//TODO: if document has one array it means split was not successful and use char count, if has multiple paragraph split was good
-
-
-
-
-
-return new Response(JSON.stringify({data: "ok"}))
+return new Response(JSON.stringify({data: "ok", totalPages, }))
     
   } catch (error) {
-
-
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Something went wrong"}))
   }
  
