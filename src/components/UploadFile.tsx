@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { uploadFileToStorage } from "../lib/uploadFile";
-import { createDocument } from "../lib/documents";
+
 import { useRouteLoaderData } from "react-router";
 
 const UploadFile = () => {
@@ -30,38 +29,32 @@ const UploadFile = () => {
     toast.success(`${file.name} selected`);
   };
 
-  //TODO: move handleUploadFile to server side processing
-
-  const handleUploadFile = async (
-    userId: string,
-    filePath: string,
-    file: File
-  ) => {
-    console.log("storing");
-    const { data: uploadedDocumentData, error: uploadedDocumentError } =
-      await uploadFileToStorage(userId, filePath, file);
-    if (!uploadedDocumentData || uploadedDocumentError) {
-      toast.error(
-        "There was an issue uploading your document: " +
-          uploadedDocumentError.message
+  const handleUploadFile = async (accessToken: string, file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/documents/upload`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        }
       );
-      return;
-    }
 
-    const { error: insertedDocumentError } = await createDocument(
-      userId,
-      file.name,
-      filePath
-    );
-    if (insertedDocumentError) {
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || "Something went wrong");
+      }
+      toast.success("Successfully uploaded " + file.name);
+    } catch (error) {
       toast.error(
-        "Could not store your document: " + insertedDocumentError.message
+        error instanceof Error ? error.message : " something went wrong"
       );
-      return;
+      //handling error from fetch with error handler in express? how can we propagate it up
     }
-
-    toast.success("Successfully uploaded " + file.name);
-    //note for review: i chose to upload the document in storage before writing the row because if it fails we can skip writing the row all together, rather than if we write the row and the upload fails we then need a seperate call to reverse. once you hav read this remind me to get rid of it
   };
 
   return (
@@ -77,9 +70,7 @@ const UploadFile = () => {
       />
       <button
         type="button"
-        onClick={() =>
-          handleUploadFile(sessionData.user.id, uploadedFile.name, uploadedFile)
-        }
+        onClick={() => handleUploadFile(sessionData.access_token, uploadedFile)}
       >
         Upload
       </button>

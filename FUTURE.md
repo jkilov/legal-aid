@@ -17,3 +17,7 @@ Ideas deliberately deferred. Not committed work.
   ## for later exploration
 
 Phase 4: refactor inline /authcheck logic into reusable auth middleware (next-based gate)
+
+## End of project deployment
+
+- replace all supabase edge functions with prod url and key and deploy to supabase cloud
