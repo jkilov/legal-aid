@@ -9,7 +9,7 @@ const UploadFile = () => {
   const sessionData = useRouteLoaderData("protected");
 
   const handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) {
       toast.error("There was an issue selecting your document");
       return;
@@ -70,7 +70,13 @@ const UploadFile = () => {
       />
       <button
         type="button"
-        onClick={() => handleUploadFile(sessionData.access_token, uploadedFile)}
+        onClick={() => {
+          if (!uploadedFile) {
+            toast.error("Please select a file first");
+            return;
+          }
+          handleUploadFile(sessionData.access_token, uploadedFile);
+        }}
       >
         Upload
       </button>

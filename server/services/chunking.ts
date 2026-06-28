@@ -17,7 +17,7 @@ break;
 
      const chunk = chunkSection.join(" ")
 
-     const {data: chunkedData, error: saveChunkError} = await supabase
+     const {error: saveChunkError} = await supabase
      .from("chunks")
      .insert ({
         document_id: documentId,

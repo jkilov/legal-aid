@@ -36,11 +36,10 @@ if(authError){
 const body = reqq.json()
 const userId = body.userId
 const filePath = body.filePath
-const file = body.File
 
 
 
-const {data: createDocumentData, error: createDocumentError} = await supabase.from("documents")
+const {error: createDocumentError} = await supabase.from("documents")
 .insert({
   user_id: userId, document_name: documentName, document_path: filePath, status: "Uploaded"
 })

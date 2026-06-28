@@ -29,7 +29,7 @@ const supabase = createClient(
 
 console.log("server started")
 
-Deno.serve(async (req) => {
+Deno.serve(async (_req) => {
 
   try {
 //     if (!req) {
