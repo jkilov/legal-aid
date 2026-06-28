@@ -3,15 +3,14 @@ import { useState } from "react";
 interface Props {
   title: string;
   btnText: React.ReactNode;
-  btnFn: (email: string, password: string) => void;
+  btnFn: (email: string, password: string) => Promise<void>;
 }
 const Auth = ({ title, btnText, btnFn }: Props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (email: string, password: string) => {
-    btnFn(email, password);
-    setEmail("");
+  const handleSubmit = async (email: string, password: string) => {
+    await btnFn(email, password);
     setPassword("");
   };
 

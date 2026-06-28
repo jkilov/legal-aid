@@ -27,6 +27,7 @@ export const router = createBrowserRouter([
         element: <AuthPage />,
       },
       {
+        id: "protected",
         element: <ProtectedLayout />,
         loader: requireAuth,
         children: [

@@ -1,14 +1,9 @@
+import UploadFile from "../components/UploadFile";
+
 const HomePage = () => {
   return (
     <div>
-      <h2>Welcome to Legal-Aid</h2>
-      <h3>Upload Legal document:</h3>
-      <input
-        type="file"
-        name="docUpload"
-        id="docUpload"
-        accept=".doc, .docx, .pdf"
-      />
+      <UploadFile />
     </div>
   );
 };

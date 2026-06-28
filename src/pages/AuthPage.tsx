@@ -18,14 +18,17 @@ const AuthPage = () => {
       await run(async () => {
         const { data, error } = await signInUser(email, password);
 
-        if (error) throw new Error(error.message);
+        if (error) {
+          toast.error(error.message);
+          throw new Error(error.message);
+        }
 
         navigate("/");
         return data;
       });
     } catch (err) {
       console.error(
-        toast.error(err instanceof Error ? err.message : "Something when wrong")
+        err instanceof Error ? err.message : "Something when wrong"
       );
     }
   };
@@ -34,7 +37,7 @@ const AuthPage = () => {
     try {
       const { error } = await run(async () => await signInGoogle());
       if (error) {
-        return "There was an error";
+        toast.error("There was an error");
       }
     } catch (error) {
       const message =
@@ -45,11 +48,13 @@ const AuthPage = () => {
 
   const handleCreateUser = async (email: string, password: string) => {
     await run(async () => {
-      const { data, error } = await createUser(email, password);
+      const { error } = await createUser(email, password);
+
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      toast.success("New user created");
+      navigate("/");
     });
   };
 

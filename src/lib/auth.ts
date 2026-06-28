@@ -26,7 +26,7 @@ export const signInGoogle = async() => {
 
 const {data, error} = await supabase.auth.signInWithOAuth({
     provider: "google", options: {
-    redirectTo: "legal-aid-coral.vercel.app"
+    redirectTo: import.meta.env.GOOGLE_REDIRECT
 }})
 return {data, error}
 }
