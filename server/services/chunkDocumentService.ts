@@ -9,7 +9,7 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
 
     const { error: documentError} = await supabase
     .from("documents")
-    .update({status: "Processing"})
+    .update({status: "processing"})
     .eq("document_id", documentId)
 
     if(documentError) {

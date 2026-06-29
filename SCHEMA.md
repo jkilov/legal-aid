@@ -53,14 +53,14 @@ This table stores all the uploaded documents to the system for LLM and RAG retri
 
 Columns:
 
-| Column          | Type                                        | Required | Purpose                                                                                     |
-| --------------- | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| user_id         | foreign key from User table                 | yes      | to associate file uploads with a user                                                       |
-| document_id     | uuid - primary key                          | yes      | give each document a unique id to associate with chunking                                   |
-| document_name   | text                                        | yes      | provide identifiable name for each document                                                 |
-| document_path   | text                                        | no       | provide the supabase storage path for each document. Doesn't happen immediately             |
-| status          | enum - uploading, processing, ready, failed | yes      | used to provide status on document upload process as chunking and embedding is asynchronous |
-| doc_upload_date | timestamptz                                 | yes      | provide upload timestamptz for each document upload                                         |
+| Column          | Type                                       | Required | Purpose                                                                                     |
+| --------------- | ------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
+| user_id         | foreign key from User table                | yes      | to associate file uploads with a user                                                       |
+| document_id     | uuid - primary key                         | yes      | give each document a unique id to associate with chunking                                   |
+| document_name   | text                                       | yes      | provide identifiable name for each document                                                 |
+| document_path   | text                                       | no       | provide the supabase storage path for each document. Doesn't happen immediately             |
+| status          | enum - Uploaded, Processing, Ready, Failed | yes      | used to provide status on document upload process as chunking and embedding is asynchronous |
+| doc_upload_date | timestamptz                                | yes      | provide upload timestamptz for each document upload                                         |
 
 constraints:
 

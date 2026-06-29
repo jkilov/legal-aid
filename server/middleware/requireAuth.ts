@@ -5,24 +5,33 @@ import {supabase} from "../config/supabase"
 
 export const requireAuth = async(req: Request,res: Response, next: NextFunction) => {
 
-    const authHeader = req.headers.authorization
+try {
 
-    if (!authHeader) {
-        return res.status(401).json({ message: "Missing authorization header" })
-    }
+  const authHeader = req.headers.authorization
 
-    const token = authHeader?.replace("Bearer ", "")
+  if (!authHeader) {
+      throw new Error("Missing auth Header")
+  }
 
-    const {data: {user}, error: authError} = await supabase.auth.getUser(token)
+  const token = authHeader?.replace("Bearer ", "")
 
-    if (authError || !user) {
-      return  res.status(401).json({ message: "Invalid Authorization" })
-    }
+  const {data: {user}, error: authError} = await supabase.auth.getUser(token)
 
-    req.user = user
+  if (authError || !user) {
+throw new Error ("Invalid Auth")
+}
 
-    next()
+  req.user = user
 
+  next()
+
+  
+} catch (error) {
+  return res.status(503).json({ message: error instanceof Error ? error.message : "Something went wrong"})
+}
+
+
+   
    
 
 }
