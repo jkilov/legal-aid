@@ -59,7 +59,7 @@ Columns:
 | document_id     | uuid - primary key                         | yes      | give each document a unique id to associate with chunking                                   |
 | document_name   | text                                       | yes      | provide identifiable name for each document                                                 |
 | document_path   | text                                       | no       | provide the supabase storage path for each document. Doesn't happen immediately             |
-| status          | enum - Uploaded, Processing, Ready, Failed | yes      | used to provide status on document upload process as chunking and embedding is asynchronous |
+| status          | enum - uploaded, processing, ready, failed | yes      | used to provide status on document upload process as chunking and embedding is asynchronous |
 | doc_upload_date | timestamptz                                | yes      | provide upload timestamptz for each document upload                                         |
 
 constraints:
@@ -83,6 +83,10 @@ Purpose:
 
 this table stores all the chunks from each document that has been uploaded by the user
 
+Citations:
+
+Citations made by matching chunk text back into the source document, because reliable paragraph/page anchoring wasn't achievable through PDF text extraction
+
 Columns:
 
 | Column | Type | Required | Purpose |
@@ -92,7 +96,8 @@ Columns:
 |chunk_id | uuid - primary key of the table | yes | give each chunk a unique identifier |
 | chunk | |text | yes | hold the actual body of text of the chunk which is used to send to the LLM |
 | chunk_order | int | yes | needed to maintain order when chunking exists across paragraphs greater in size than chunk size |
-| paragraph_number | int | yes | gives the paragraph where the chunk exists |
+| doc_order_number | int | yes | gives the current total word count where the chunk exists |
+| chunk_condition | text | yes | defines what constant chunking was done on |
 | embedding | vector(1536) | no | turns chunks into embeddings for similarity association |
 
 Constraints:
@@ -103,7 +108,7 @@ Unique rules:
 
 Non-null:
 
-- all columns except chunk_embedding are non-null
+- all columns except embedding are non-null
 
 Relationships:
 

@@ -22,6 +22,7 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
     .from("file_upload").download(filePath);
 
     if (!downloadedDocumentData || downloadedDocumentError) {
+        await supabase.from("documents").update({status: "failed"}).eq("document_id", documentId)
         throw new Error(downloadedDocumentError.message)
     }
 
@@ -30,6 +31,7 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
     const {totalPages, text} = await extractText(pdf, {mergePages: true})
 
     if (text.length === 0) {
+        await supabase.from("documents").update({status: "failed"}).eq("document_id", documentId)
         throw new Error("Could not extract PDF text)")
     }
 
@@ -39,7 +41,8 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
     return {
         totalPages,
         chunkCount,
-        status: "Document chunking processed"
+        status: "Document chunking processed",
+        documentId,
     }
 
 

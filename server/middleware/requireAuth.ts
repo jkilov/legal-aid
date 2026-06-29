@@ -13,6 +13,10 @@ try {
       throw new Error("Missing auth Header")
   }
 
+  if (!authHeader.startsWith("Bearer ")) {
+    throw new Error("incorrect authorization")
+  }
+
   const token = authHeader?.replace("Bearer ", "")
 
   const {data: {user}, error: authError} = await supabase.auth.getUser(token)
@@ -27,7 +31,7 @@ throw new Error ("Invalid Auth")
 
   
 } catch (error) {
-  return res.status(503).json({ message: error instanceof Error ? error.message : "Something went wrong"})
+  return res.status(401).json({ message: error instanceof Error ? error.message : "Something went wrong"})
 }
 
 

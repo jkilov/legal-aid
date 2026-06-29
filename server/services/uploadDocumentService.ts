@@ -17,14 +17,9 @@ const allowedFileTypes = [
         throw new Error("File type unsupported)")
     }
 
-    const filePath = `user/${userId}/${documentName}`
+    const filePath = `users/${userId}/${documentName}`
 
-    const {data: uploadedDocumentData, error: uploadedDocumentError} = await supabase.storage.from("file_upload")
-    .upload(filePath, file.buffer)
 
-    if (uploadedDocumentError || !uploadedDocumentData) {
-        throw new Error("There was an issue uploading file")
-    }
 
     const {data: createDocument, error: createDocumentError} = await supabase.from("documents")
     .insert({
@@ -40,9 +35,18 @@ if (createDocumentError || !createDocument){
     throw new Error("There was an issue creating your document")
 }
 
+    const {data: uploadedDocumentData, error: uploadedDocumentError} = await supabase.storage.from("file_upload")
+    .upload(filePath, file.buffer)
+
+    if (uploadedDocumentError || !uploadedDocumentData) {
+        await supabase.from("documents").delete().eq("document_id", createDocument[0].document_id )
+        throw new Error("There was an issue uploading file")
+    }
+
+
 return {
     documentId: createDocument[0].document_id,
-    filePath: `users/${createDocument[0].document_path}`,
+    filePath,
     status: createDocument[0].status
 }
 
