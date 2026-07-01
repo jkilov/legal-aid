@@ -43,17 +43,23 @@ const UploadFile = () => {
           body: formData,
         }
       );
+      //TODO: ensure the response to this API gives us the details needed for HomePAge.tsx shape
 
+      const res = await response.json();
+      console.log("Res", res);
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
+        //TODO: wtf is this above
         throw new Error(data.message || "Something went wrong");
       }
+
+      //TODO: Add homepage function to capture the response here and pass upwards
       toast.success("Successfully uploaded " + file.name);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : " something went wrong"
       );
-      //handling error from fetch with error handler in express? how can we propagate it up
+      //TODO: does this get swapped out for my handleAsyncFunction hook
     }
   };
 

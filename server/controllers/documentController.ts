@@ -29,7 +29,8 @@ export const uploadDocument = async(req: Request, res: Response, next: NextFunct
  
         const {totalPages, chunkCount, status,} = await chunkDocumentService(documentId, filePath)
 
-        return res.status(200).send({totalPages, chunkCount, status})
+        // return res.status(200).send({totalPages, chunkCount, status})
+        return res.status(200).send(JSON.stringify("AAASSSSSSSSSSSSSSSS"))
 
     } catch (error) {
 
