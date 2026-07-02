@@ -2,8 +2,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { useRouteLoaderData } from "react-router";
+import type { AllDocuments } from "../../shared/types";
 
-const UploadFile = () => {
+interface Props {
+  onDocumentUploaded: (uploadedDocument: AllDocuments[]) => void;
+}
+
+const UploadFile = ({ onDocumentUploaded }: Props) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const sessionData = useRouteLoaderData("protected");
@@ -43,10 +48,7 @@ const UploadFile = () => {
           body: formData,
         }
       );
-      //TODO: ensure the response to this API gives us the details needed for HomePAge.tsx shape
 
-      const res = await response.json();
-      console.log("Res", res);
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
         //TODO: wtf is this above
@@ -55,6 +57,18 @@ const UploadFile = () => {
 
       //TODO: Add homepage function to capture the response here and pass upwards
       toast.success("Successfully uploaded " + file.name);
+      const allDocumentsResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/documents/library`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const allDocuments = await allDocumentsResponse.json();
+      onDocumentUploaded(allDocuments);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : " something went wrong"

@@ -1,23 +1,23 @@
 import { useState } from "react";
 
 import UploadFile from "../components/UploadFile";
-import UploadedDocumentList from "../components/UploadedDocumentList";
+import DocumentList from "../components/DocumentList";
 
-type DocumentData = {
-  document_id: string;
-  document_name: string;
-  document_path: string;
-  status: string;
-  created_at: string;
-};
+import type { AllDocuments } from "../../shared/types";
 
 const HomePage = () => {
-  const [documentData, setDocumentData] = useState<DocumentData[]>([]);
+  const [documentData, setDocumentData] = useState<AllDocuments[]>([]);
+
+  const handleDocumentUploaded = (uploadedDocument: AllDocuments[]) => {
+    setDocumentData(uploadedDocument);
+  };
+
+  console.log("documentData", documentData);
 
   return (
     <div>
-      <UploadFile />
-      <UploadedDocumentList />
+      <UploadFile onDocumentUploaded={handleDocumentUploaded} />
+      <DocumentList documents={documentData} />
     </div>
   );
 };

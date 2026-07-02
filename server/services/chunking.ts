@@ -48,9 +48,10 @@ if (chunkSection.length === 0) {
 continue;
     }
 
-    const {error: saveChunkError} = await supabase
+    const { error: saveChunkError} = await supabase
     .from("chunks")
     .insert(documentChunks)
+    .select()
 
     if (saveChunkError) {
         await supabase.from("documents").update({status: "failed"}).eq("document_id", documentId)

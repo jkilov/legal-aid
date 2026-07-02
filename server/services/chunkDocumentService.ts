@@ -39,9 +39,8 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
     const {chunkCount} = await textChunking(documentId, text, 300)
 
     return {
-        totalPages,
         chunkCount,
-        status: "Document chunking processed",
+        totalPages,
         documentId,
     }
 

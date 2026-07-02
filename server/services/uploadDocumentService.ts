@@ -45,9 +45,11 @@ if (createDocumentError || !createDocument){
 
 
 return {
+    documentName: createDocument[0].document_name,
     documentId: createDocument[0].document_id,
     filePath,
-    status: createDocument[0].status
+    status: createDocument[0].status,
+    createdAt: createDocument[0].created_at
 }
 
 }
