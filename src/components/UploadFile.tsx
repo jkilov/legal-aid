@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 import { useRouteLoaderData } from "react-router";
@@ -51,11 +51,9 @@ const UploadFile = ({ onDocumentUploaded }: Props) => {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        //TODO: wtf is this above
         throw new Error(data.message || "Something went wrong");
       }
 
-      //TODO: Add homepage function to capture the response here and pass upwards
       toast.success("Successfully uploaded " + file.name);
       const allDocumentsResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/documents/library`,
@@ -76,6 +74,26 @@ const UploadFile = ({ onDocumentUploaded }: Props) => {
       //TODO: does this get swapped out for my handleAsyncFunction hook
     }
   };
+
+  //TODO: THE ABOVE NEEDS TO BE REVIEWED AS IT WAS quick implementation
+
+  useEffect(() => {
+    const runDocumentList = async () => {
+      const allDocumentsResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/documents/library`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${sessionData.access_token}`,
+          },
+        }
+      );
+
+      const allDocuments = await allDocumentsResponse.json();
+      onDocumentUploaded(allDocuments);
+    };
+    runDocumentList();
+  }, [sessionData.access_token]);
 
   return (
     <div>
