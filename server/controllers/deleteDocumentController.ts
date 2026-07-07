@@ -2,11 +2,12 @@
 import type {Request, Response, NextFunction} from "express"
 import { deleteDocument } from "../services/deleteDocument"
 
-export const deleteDocumentController = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteDocumentController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
 
     try {
         const documentId = req.body.documentId
+
 
         if (!documentId) throw new Error("Document Id could not be found")
 
@@ -18,4 +19,7 @@ const deletedDocumentData= await deleteDocument(documentId)
         next(error)
     }
 
+
+
 }
+

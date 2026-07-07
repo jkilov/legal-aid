@@ -1,4 +1,5 @@
 import { supabase } from "../config/supabase"
+import {sendDocumentStatus} from "../src/webSocket"
 
 import { chunkEmbedding } from "./chunkEmbedding"
 
@@ -10,7 +11,7 @@ type TextChunk = {
     chunk_condition: string
 }
 
-export const textChunking = async (documentId: string, text: string, chunkGroup: number): Promise<{chunkCount: number}> => {
+export const textChunking = async (userId: string, documentId: string, text: string, chunkGroup: number): Promise<{chunkCount: number}> => {
 
 
     let chunkCount = 0
@@ -18,6 +19,8 @@ export const textChunking = async (documentId: string, text: string, chunkGroup:
     const documentChunks: TextChunk[] = []
 
     const textArray = text.split(" ")
+
+    sendDocumentStatus(userId, documentId, "chunking")
 
     for (let i = 0; i < textArray.length; i += chunkGroup){
         ++chunkCount
@@ -48,20 +51,26 @@ if (chunkSection.length === 0) {
 continue;
     }
 
-    const { error: saveChunkError} = await supabase
+    const { data: chunkedData, error: saveChunkError} = await supabase
     .from("chunks")
     .insert(documentChunks)
     .select()
 
-    if (saveChunkError) {
+    if (saveChunkError || !chunkedData) {
+
+        sendDocumentStatus(userId, documentId, "failed")
         await supabase.from("documents").update({status: "failed"}).eq("document_id", documentId)
 
         throw new Error("Could not save Chunks")
     }
+    sendDocumentStatus(userId, documentId, "embedding")
 
-    const {error:statusUpdateError} = await supabase.from("documents").update({status: "ready"}).eq("document_id", documentId )
+    const {data: updatedStatus, error:statusUpdateError} = await supabase.from("documents").update({status: "ready"}).eq("document_id", documentId ).select().single()
 
-    if (statusUpdateError) throw new Error("Error updating status to Ready")
+    if (statusUpdateError || !updatedStatus) throw new Error("Error updating status to Ready")
+
+        sendDocumentStatus(userId, documentId, "ready")
+
 
     return {chunkCount}
 

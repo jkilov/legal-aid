@@ -21,3 +21,4 @@ Phase 4: refactor inline /authcheck logic into reusable auth middleware (next-ba
 ## End of project deployment
 
 - replace all supabase edge functions with prod url and key and deploy to supabase cloud
+- replace websocket access token param with a header/cookie

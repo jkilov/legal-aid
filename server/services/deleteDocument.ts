@@ -1,11 +1,11 @@
 import { supabase } from "../config/supabase"
 
-export const deleteDocument = async(documentId: string[]) => {
+export const deleteDocument = async(documentId: string): Promise<void> => {
 
-    console.log("DP", documentId)
-    const {data: deletedDocumentData, error: deleteError} = await supabase.from("documents").delete().eq("document_id", documentId)
+  
+    const response = await supabase.from("documents").delete().eq("document_id", documentId)
 
-    if (!deletedDocumentData || deleteError) throw new Error("Could not delete Document")
+    if (!response) throw new Error("Could not delete Document")
 
-    return deletedDocumentData
+
 }

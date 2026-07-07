@@ -3,39 +3,61 @@ import { chunkDocumentService } from "../services/chunkDocumentService";
 import { handleUploadDocument } from "../services/uploadDocumentService";
 
 
+
+const sleep = (attempt: number) => {
+const backOffTime = 1000
+  return new Promise(resolve => {
+setTimeout(resolve, attempt* backOffTime)
+  })
+}
+
 export const uploadDocument = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    if (!req.user) throw new Error("unable to find user details");
-    const userId = req.user.id;
-    const file = req.file;
 
-    if (!file) {
-      throw new Error("No file uploaded");
+  const maxRetries = 4
+  let attemptCount = 0
+
+  while (true) {
+
+    if (attemptCount > maxRetries) return next({status: 400, message: "Maximum retries"})
+
+    
+      if (!req.user) return next({status: 400, message: "No user Found"});
+      
+      const userId = req.user.id;
+  
+      if (!userId) return next({status: 400, message: "Cannot find user Id"})
+      
+        const file = req.file;
+  
+      if (!file) return next({status: 400, message: "No file found"})
+  
+      const fileName = file.originalname;
+  
+      try {
+
+        
+      const {
+        documentName,
+        documentId,
+        filePath,
+        status,
+        createdAt,
+      } = await handleUploadDocument(fileName, file, userId);
+  
+        chunkDocumentService(documentId, filePath);
+  
+      return res.status(200).send({ documentName, documentId, filePath, status, createdAt });
+
+    } catch (error) {
+      ++attemptCount
+      console.error(error instanceof Error ? `${maxRetries} - ${attemptCount} remaining: ` + error.message : "something went wrong")
+      await sleep(attemptCount)
     }
 
-    const fileName = file.originalname;
-
-    if (!userId) {
-      throw new Error("No user Authenticated)");
-    }
-
-    const {
-      documentName,
-      documentId,
-      filePath,
-      status,
-      createdAt,
-    } = await handleUploadDocument(fileName, file, userId);
-
-     await chunkDocumentService(documentId, filePath);
-
-    // return res.status(200).send({totalPages, chunkCount, status})
-    return res.status(200).send({ documentName, documentId, filePath, status, createdAt });
-  } catch (error) {
-    next(error);
   }
+ 
 };

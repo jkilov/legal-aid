@@ -3,12 +3,13 @@ import { toast } from "sonner";
 
 import { useRouteLoaderData } from "react-router";
 import type { AllDocuments } from "../../shared/types";
+import { getDocumentsLibrary } from "../api/documentsApi";
 
 interface Props {
-  onDocumentUploaded: (uploadedDocument: AllDocuments[]) => void;
+  onUpdateDocumentLibrary: (documentLibrary: AllDocuments[]) => void;
 }
 
-const UploadFile = ({ onDocumentUploaded }: Props) => {
+const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const sessionData = useRouteLoaderData("protected");
@@ -55,18 +56,8 @@ const UploadFile = ({ onDocumentUploaded }: Props) => {
       }
 
       toast.success("Successfully uploaded " + file.name);
-      const allDocumentsResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/documents/library`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      const allDocuments = await allDocumentsResponse.json();
-      onDocumentUploaded(allDocuments);
+      const documentLibrary = await getDocumentsLibrary(accessToken);
+      onUpdateDocumentLibrary(documentLibrary);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : " something went wrong"
@@ -89,8 +80,8 @@ const UploadFile = ({ onDocumentUploaded }: Props) => {
         }
       );
 
-      const allDocuments = await allDocumentsResponse.json();
-      onDocumentUploaded(allDocuments);
+      const documentLibrary = await allDocumentsResponse.json();
+      onUpdateDocumentLibrary(documentLibrary);
     };
     runDocumentList();
   }, [sessionData.access_token]);

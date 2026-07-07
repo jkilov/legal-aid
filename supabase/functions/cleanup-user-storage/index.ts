@@ -27,21 +27,37 @@ Deno.serve(async (req) => {
     }
 
     const payload = await req.json()
+
+    if (!payload.record) {
+      return new Response(JSON.stringify({
+        ok: false,
+        error: "Missing record in webhook payload"
+      }), {
+        status: 400,
+        headers: {"Content-Type": "application/json"}
+      })
+    }
+
     const job = payload.record;
   const jobId = job.id
   const userId = job.user_id
+  const documentName = job.document_name
 
 
+  let filePaths: string[];
 
-  const folderPath = `users/${userId}`
+  if (documentName) {
 
-  const {data: files, error: listError} = await supabase.storage
-  .from("file_upload")
-  .list(folderPath)
+    filePaths = [`users/${userId}/${documentName}`]
+  } else {
+    const {data: files, error: listError} = await supabase.storage
+    .from("file_upload")
+    .list(`users/${userId}`)
 
-  if (listError) throw listError
+    if (listError) throw listError
 
-const filePaths = files?.map( file => `${folderPath}/${file.name}`) ?? [];
+    filePaths = files?.map( file => `users/${userId}/${file.name}`) ?? [];
+  }
 
 if (filePaths.length > 0) {
   const {error: removeError} = await supabase.storage.from("file_upload").remove(filePaths);
