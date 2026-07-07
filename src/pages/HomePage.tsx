@@ -5,14 +5,32 @@ import DocumentList from "../components/DocumentList";
 
 import type { AllDocuments } from "../../shared/types";
 import { useRouteLoaderData } from "react-router";
+import DocumentSearch from "../components/DocumentSearch";
+
+export type DocumentSearchItem = Pick<
+  AllDocuments,
+  "document_id" | "document_name"
+>;
 
 const HomePage = () => {
   const [documentData, setDocumentData] = useState<AllDocuments[]>([]);
-
+  const [selectedDocument, setSelectedDocument] =
+    useState<DocumentSearchItem | null>(null);
+  //TODO: use this later for an onclick for the selected document
   const session = useRouteLoaderData("protected");
 
   const handleUpdateDocumentLibrary = (uploadedDocument: AllDocuments[]) => {
     setDocumentData(uploadedDocument);
+  };
+
+  const handleSelectDocument = (
+    documentId: string,
+    documentName: string
+  ): void => {
+    setSelectedDocument({
+      document_id: documentId,
+      document_name: documentName,
+    });
   };
 
   useEffect(() => {
@@ -41,7 +59,9 @@ const HomePage = () => {
       <DocumentList
         documents={documentData}
         onUpdateDocumentLibrary={handleUpdateDocumentLibrary}
+        onSelectDocument={handleSelectDocument}
       />
+      <DocumentSearch selectedDocument={selectedDocument} />
     </div>
   );
 };

@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({apiKey: process.env.GOOGLE_API_KEY})
 
 export const chunkEmbedding = async(chunkText: string): Promise<number[]> => { 
 
-    if (typeof chunkText !== "string" ||!chunkText.trim() ) throw new Error("unable to find text for embedding")
+    if (typeof chunkText !== "string" || !chunkText.trim() ) throw new Error("unable to find text for embedding")
 
     const embeddingResponse = await ai.models.embedContent({
         model: "gemini-embedding-2",

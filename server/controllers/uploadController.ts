@@ -25,14 +25,12 @@ export const uploadDocument = async (
     if (attemptCount > maxRetries) return next({status: 400, message: "Maximum retries"})
 
     
-      if (!req.user) return next({status: 400, message: "No user Found"});
       
       const userId = req.user.id;
-  
+      const file = req.file;
+      if (!req.user) return next({status: 400, message: "No user Found"});
+
       if (!userId) return next({status: 400, message: "Cannot find user Id"})
-      
-        const file = req.file;
-  
       if (!file) return next({status: 400, message: "No file found"})
   
       const fileName = file.originalname;
