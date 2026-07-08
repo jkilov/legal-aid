@@ -1,5 +1,5 @@
 | DATE | STATUS | COMMENT |
 
-03-jul | WIP |
+08-jul | WIP |
 
-delete functionality is not working - receving serer error (500) when http request send on click
+- cleaning up supabase integrations on server do not need {data,error} on call or on definition unless using

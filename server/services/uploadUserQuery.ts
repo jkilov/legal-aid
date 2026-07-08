@@ -1,11 +1,11 @@
 import {supabase} from "../config/supabase"
 
 
-type QueryData = {
-    userId: string,
-    questionId: string,
-    userQuery: string,
-    documentId: string,
+export type QueryData = {
+    user_id: string,
+    question_id: string,
+    question: string,
+    document_id: string,
 }
 
 export const uploadUserQuery = async (userId: string, userQuery: string, documentId: string): Promise<QueryData> => {
@@ -21,12 +21,7 @@ const {data: queryData, error: queryError} = await supabase.from("questions")
 
 if (queryError || !queryData) throw new Error("unable to store user query")
 
-return {
-    userId,
-    questionId: queryData.question_id,
-    userQuery,
-    documentId,
-}
+return queryData
 
 }
 

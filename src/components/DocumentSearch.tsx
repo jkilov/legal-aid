@@ -38,7 +38,11 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
       }
     );
 
-    console.log(response);
+    if (!response.ok) {
+      toast.error("There was an error querying your document");
+      return;
+    }
+    toast.success("Query Completed");
   };
 
   return (

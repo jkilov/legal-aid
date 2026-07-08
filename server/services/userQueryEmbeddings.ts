@@ -6,7 +6,7 @@ dotenv.config()
 
 const ai = new GoogleGenAI({apiKey: process.env.Google_API_KEy})
 
-export const createUSerQueryEmbeddings = async (query: string): Promise<number[]> => {
+export const createUserQueryEmbeddings = async (query: string): Promise<number[]> => {
 
     if (typeof query !== "string" || !query.trim()) throw new Error("User query is in an incorrect format")
 
@@ -28,4 +28,3 @@ return embeddings
 }
 
 
-createUSerQueryEmbeddings("this is my query")
