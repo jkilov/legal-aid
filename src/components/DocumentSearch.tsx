@@ -18,14 +18,14 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
     setUserQuery(userInput);
   };
 
+  //HACK:
   const document_id = "d278c33d-a200-4fe7-a3d3-83f7de41c55a";
-
   const document_name = "fake_contract_chunking_test.pdf";
+  //HACK: - use actual passed props later
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
 
-    //TODO: need to access the access token from the session routerLoader
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/documents/${document_id}/query`,
       {

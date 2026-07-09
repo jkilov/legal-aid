@@ -2,6 +2,9 @@ import type {Request, Response, NextFunction} from "express"
 import { uploadUserQuery, type QueryData } from "../services/uploadUserQuery"
 import { createUserQueryEmbeddings } from "../services/userQueryEmbeddings"
 import {updateQueryTableWithEmbeddings} from "../services/updateQueryTable"
+import { retrieveChunks } from "../services/retrieveChunks"
+import type {SimilarChunks} from "../src/types/chunks"
+
 
 export const queryDocumentsController = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -30,6 +33,9 @@ if (!queryData) throw new Error("unable to find row data required")
 
 
  const data = await updateQueryTableWithEmbeddings(embedding, queryData.question_id)
+
+ const similarChunks: SimilarChunks[] = await retrieveChunks(embedding,documentId, 3 )
+
 
 
         return res.status(200).send({message: "upload complete", data})

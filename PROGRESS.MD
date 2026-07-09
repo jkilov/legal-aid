@@ -1,5 +1,7 @@
 | DATE | STATUS | COMMENT |
 
-08-jul | WIP |
+09-jul | WIP |
 
-- cleaning up supabase integrations on server do not need {data,error} on call or on definition unless using
+- need to write the correct promp fo sending query and chunks to t he model - follow how to write the best prompt
+
+/Users/joshkilov/Desktop/Coding Projects/legal-aid/server/services/modelQueryResponse.ts
