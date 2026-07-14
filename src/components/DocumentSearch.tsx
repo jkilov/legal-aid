@@ -3,16 +3,18 @@ import { useState } from "react";
 import type { DocumentSearchItem } from "../pages/HomePage";
 import { useRouteLoaderData } from "react-router";
 import { toast } from "sonner";
+import type { SimilarChunks, RagAnswer } from "../../server/src/types/chunks";
 
-interface Props {
-  selectedDocument: DocumentSearchItem;
-}
+// interface Props {
+//   selectedDocument: DocumentSearchItem;
+// }
 
 //TODO: when using this components we need to pass the docID as url params for the page
 
 const DocumentSearch = ({ selectedDocument }: Props) => {
   const sessionData = useRouteLoaderData("protected");
   const [userQuery, setUserQuery] = useState("");
+  const [ragResponse, setRagResponse] = useState<RagAnswer | null>(null);
 
   const handleUserInput = (userInput: string): void => {
     setUserQuery(userInput);
@@ -42,6 +44,9 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
       toast.error("There was an error querying your document");
       return;
     }
+    const result = await response.json();
+    setRagResponse(result);
+    //swap this out with a loading indicator
     toast.success("Query Completed");
   };
 

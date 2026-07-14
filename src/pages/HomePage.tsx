@@ -5,8 +5,6 @@ import DocumentList from "../components/DocumentList";
 
 import type { AllDocuments } from "../../shared/types";
 import { useRouteLoaderData } from "react-router";
-import DocumentSearch from "../components/DocumentSearch";
-
 export type DocumentSearchItem = Pick<
   AllDocuments,
   "document_id" | "document_name"
@@ -61,7 +59,6 @@ const HomePage = () => {
         onUpdateDocumentLibrary={handleUpdateDocumentLibrary}
         onSelectDocument={handleSelectDocument}
       />
-      <DocumentSearch selectedDocument={selectedDocument} />
     </div>
   );
 };

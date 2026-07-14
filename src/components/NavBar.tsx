@@ -1,5 +1,6 @@
 import { signOutUser } from "../lib/auth";
 import { useNavigate } from "react-router";
+import "tailwindcss";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -7,12 +8,18 @@ const NavBar = () => {
     await signOutUser();
     navigate("/");
   };
+
+  const handleNavigate = (path: string): void => {
+    navigate(`/${path}`);
+  };
+
   return (
-    <div>
-      {" "}
-      <button type="button" onClick={handleSignOut}>
-        Sign out
-      </button>
+    <div className="border-b border-solid">
+      <li className="flex flex-row justify-evenly m-5">
+        <ul onClick={() => handleNavigate("ask")}>Ask</ul>
+        <ul>Document Library</ul>
+        <ul onClick={handleSignOut}>Sign Out</ul>
+      </li>
     </div>
   );
 };

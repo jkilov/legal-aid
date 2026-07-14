@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage";
 import AuthPage from "../pages/AuthPage";
 import App from "../App";
 import ProtectedLayout from "../layouts/ProtectedLayout";
+import DocumentQueryPage from "../pages/DocumentQueryPage";
 
 const requireAuth = async () => {
   const {
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <HomePage />,
+          },
+          {
+            path: "ask",
+            element: <DocumentQueryPage />,
           },
         ],
       },

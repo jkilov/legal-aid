@@ -21,7 +21,7 @@ export const createUserQueryEmbeddings = async (query: string): Promise<number[]
 
 const embeddings = queryEmbedding.embeddings?.[0]?.values
 
-if (embeddings.length !== 1536) throw new Error("there was an error embedding user query")
+if (!embeddings || embeddings.length !== 1536) throw new Error("there was an error embedding user query")
 
 return embeddings
 

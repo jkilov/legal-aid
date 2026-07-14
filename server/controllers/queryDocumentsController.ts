@@ -33,16 +33,14 @@ if (!queryData) throw new Error("unable to find row data required")
  const embedding = await createUserQueryEmbeddings(query)
 
 
- const data = await updateQueryTableWithEmbeddings(embedding, queryData.question_id)
+  await updateQueryTableWithEmbeddings(embedding, queryData.question_id)
 
  const similarChunks: SimilarChunks[] = await retrieveChunks(embedding,documentId, 3 )
 
-console.log("here")
-
-await generateRagAnswer(query, similarChunks)
+const ragResponse = await generateRagAnswer(query, similarChunks)
 
 
-        return res.status(200).send({message: "upload complete"})
+        return res.status(200).send(ragResponse)
     
 } catch (error) {
     next(error)
