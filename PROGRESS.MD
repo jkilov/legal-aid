@@ -1,6 +1,5 @@
 | DATE | STATUS | COMMENT |
 
-13-jul | WIP |
+20-jul | WIP |
 
-- update gemini model to active model to allow for rag response
-    
+- fixed sending blob from BE to Fe - new error invalid PDF expression invalid pdf structure

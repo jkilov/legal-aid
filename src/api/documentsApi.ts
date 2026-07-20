@@ -1,3 +1,5 @@
+
+
 import type { AllDocuments } from "../../shared/types";
 
 
@@ -22,3 +24,45 @@ export const getDocumentsLibrary = async(accessToken: string): Promise<AllDocume
       return allDocuments
 
 }
+
+
+
+
+export const getDocumentFile = async (documentId: string, accessToken: string) => {
+
+ 
+
+ 
+  if (!documentId || !accessToken) throw new Error ("incomplete credentials for fetching document")
+
+
+
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/documents/${documentId}/view`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    })
+
+  
+    if (!response.ok) throw new Error("unable to retrieve document for viewing")
+
+console.log("res", response)
+      const result = await response.blob()
+
+      console.log("ress", result)
+
+      return result
+    
+  } catch (error) {
+
+    return error
+    
+  }
+
+
+}
+

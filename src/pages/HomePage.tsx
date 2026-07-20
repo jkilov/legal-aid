@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import UploadFile from "../components/UploadFile";
 import DocumentList from "../components/DocumentList";
 
-import type { AllDocuments } from "../../shared/types";
 import { useRouteLoaderData } from "react-router";
 export type DocumentSearchItem = Pick<
   AllDocuments,

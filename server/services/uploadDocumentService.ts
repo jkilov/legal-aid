@@ -42,7 +42,10 @@ sendDocumentStatus(userId, createDocument.document_id, "uploading")
 
 
     const {data: uploadedDocumentData, error: uploadedDocumentError} = await supabase.storage.from("file_upload")
-    .upload(filePath, file.buffer)
+    .upload(filePath, file.buffer, {
+        contentType: "application/pdf",
+        cacheControl: "3600",
+    })
 
 
     if (uploadedDocumentError || !uploadedDocumentData) {
