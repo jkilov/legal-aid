@@ -50,10 +50,9 @@ export const getDocumentFile = async (documentId: string, accessToken: string) =
   
     if (!response.ok) throw new Error("unable to retrieve document for viewing")
 
-console.log("res", response)
       const result = await response.blob()
 
-      console.log("ress", result)
+console.log("b", result)
 
       return result
     

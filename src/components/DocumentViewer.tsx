@@ -21,16 +21,15 @@ const DocumentViewer = ({ documentId }: Props) => {
     const fetchFile = async () => {
       const blob = await getDocumentFile(documentId, sessionId.access_token);
 
-      console.log("HT", blob);
-
       const fileUrl = URL.createObjectURL(blob);
+
+      console.log("fp", fileUrl);
+
       setDocumentUrl(fileUrl);
     };
 
     fetchFile();
   }, [documentId, sessionId.access_token]);
-
-  console.log("documentViwer", documentUrl);
 
   return (
     <div>

@@ -13,11 +13,11 @@ export const retrieveDocumentController = async (req: Request, res: Response, ne
         try {
             const filePath = await getDocumentPath(documentId)
 
-            const fileBlob= await retrieveDocument(filePath)
+            const fileBlob = await retrieveDocument(filePath)
 
-
+            const blobArrayBuffer = await fileBlob.arrayBuffer()
        
-            return res.status(200).send(fileBlob)
+            return res.status(200).send(Buffer.from(blobArrayBuffer))
         } catch (error) {
             next(error)
         }
