@@ -3,9 +3,12 @@ import NavBar from "../components/NavBar";
 
 const ProtectedLayout = () => {
   return (
-    <div>
+    <div className="h-screen flex flex-col overflow-hidden">
       <NavBar />
-      <Outlet />
+
+      <div className="flex-1 min-h-0">
+        <Outlet />
+      </div>
     </div>
   );
 };

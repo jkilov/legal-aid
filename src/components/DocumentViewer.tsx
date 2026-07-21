@@ -51,21 +51,33 @@ const DocumentViewer = ({ documentId }: Props) => {
     return "Error loading PDF";
   };
 
+  const handleDocumentNavigation = (change: number) => {
+    setCurrentPage((prev) => prev + change);
+  };
+
   return (
-    <div>
-      <Document
-        onLoadSuccess={handleLoadSuccess}
-        noData={<p>Loading...</p>}
-        error={<p>Error Loading Document</p>}
-        file={documentUrl}
-        onLoadError={handleLoadError}
-      >
-        <Page pageNumber={1} renderTextLayer renderAnnotationLayer />
-      </Document>
+    <div className="relative h-full">
+      <div className="h-full overflow-y-auto">
+        <Document
+          onLoadSuccess={handleLoadSuccess}
+          noData={<p>Loading...</p>}
+          error={<p>Error Loading Document</p>}
+          file={documentUrl}
+          onLoadError={handleLoadError}
+        >
+          <Page
+            pageNumber={currentPage}
+            renderTextLayer
+            renderAnnotationLayer
+          />
+        </Document>
+      </div>
+
       {totalPages && (
         <DocumentNavigation
           totalDocumentPages={totalPages}
           currentDocumentPage={currentPage}
+          onDocumentNavigation={handleDocumentNavigation}
         />
       )}
     </div>

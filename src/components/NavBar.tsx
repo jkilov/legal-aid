@@ -16,8 +16,8 @@ const NavBar = () => {
   return (
     <div className="border-b border-solid">
       <li className="flex flex-row justify-evenly m-5">
-        <ul onClick={() => handleNavigate("ask")}>Ask</ul>
-        <ul>Document Library</ul>
+        <ul onClick={() => handleNavigate("search")}>Document Search</ul>
+        <ul onClick={() => handleNavigate("library")}>Document Library</ul>
         <ul onClick={handleSignOut}>Sign Out</ul>
       </li>
     </div>

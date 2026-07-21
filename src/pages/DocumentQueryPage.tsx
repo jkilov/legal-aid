@@ -13,25 +13,25 @@ const DocumentQueryPage = () => {
   };
 
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-full">
       <aside className="w-1/6 border-r">
         document Library
         <div>
           <Documents onDocumentSelection={handleSelectDocument} />
         </div>
       </aside>
-      <section className="border-r relative flex-4 overflow-scroll">
+
+      <section className="relative flex-4 h-full overflow-hidden border-r">
         {selectedDocument ? (
           <DocumentViewer documentId={selectedDocument.document_id} />
         ) : (
           "No Document Selected"
         )}
       </section>
-      <main className=" flex flex-col justify-center items-center flex-3">
+
+      <main className="flex flex-col justify-center items-center flex-3">
         <RagAnswer />
-        <DocumentSearch
-        //   selectedDocument={selectedDocument}
-        />
+        <DocumentSearch />
       </main>
     </div>
   );

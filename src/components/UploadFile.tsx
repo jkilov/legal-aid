@@ -87,16 +87,23 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
   }, [sessionData.access_token]);
 
   return (
-    <div>
-      <h2>Welcome to Legal-Aid</h2>
-      <h3>Upload Legal document:</h3>
-      <input
-        type="file"
-        name="docUpload"
-        id="docUpload"
-        accept=".doc, .docx, .pdf"
-        onChange={handleSelectFile}
-      />
+    <div className="flex flex-col">
+      <h2>Upload Legal document</h2>
+      <h3>Placeholder</h3>
+      <h3>Description box</h3>
+
+      <label>
+        Upload Document
+        <input
+          className="hidden"
+          type="file"
+          name="docUpload"
+          id="docUpload"
+          accept=".doc, .docx, .pdf"
+          onChange={handleSelectFile}
+        />
+      </label>
+      <p>{uploadedFile?.name ?? ""}</p>
       <button
         type="button"
         onClick={() => {
