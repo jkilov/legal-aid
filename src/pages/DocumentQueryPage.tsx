@@ -12,8 +12,6 @@ const DocumentQueryPage = () => {
     setSelectedDocument(document);
   };
 
-  console.log("documentQueryPage", selectedDocument);
-
   return (
     <div className="flex flex-row h-screen">
       <aside className="w-1/6 border-r">
@@ -22,7 +20,7 @@ const DocumentQueryPage = () => {
           <Documents onDocumentSelection={handleSelectDocument} />
         </div>
       </aside>
-      <section className="border-r flex-4">
+      <section className="border-r relative flex-4 overflow-scroll">
         {selectedDocument ? (
           <DocumentViewer documentId={selectedDocument.document_id} />
         ) : (

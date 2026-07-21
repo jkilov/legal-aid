@@ -42,8 +42,6 @@ const Documents = ({ onDocumentSelection }: Props) => {
 
   if (documents.length === 0) return "No documents uploaded";
 
-  console.log("Documents", selectedDocument);
-
   return (
     <div>
       {documents.map((document) => (

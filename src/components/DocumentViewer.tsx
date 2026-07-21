@@ -5,6 +5,8 @@ import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { useRouteLoaderData } from "react-router";
+import { toast } from "sonner";
+import DocumentNavigation from "./DocumentNavigation";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -14,8 +16,17 @@ interface Props {
 
 const DocumentViewer = ({ documentId }: Props) => {
   const [documentUrl, setDocumentUrl] = useState<any>();
+  //TODO: FIX the type above
+
+  const [totalPages, setTotalPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(null);
 
   const sessionId = useRouteLoaderData("protected");
+
+  const resetDocument = () => {
+    setTotalPages(null);
+    setCurrentPage(null);
+  };
 
   useEffect(() => {
     const fetchFile = async () => {
@@ -23,23 +34,40 @@ const DocumentViewer = ({ documentId }: Props) => {
 
       const fileUrl = URL.createObjectURL(blob);
 
-      console.log("fp", fileUrl);
-
+      resetDocument();
       setDocumentUrl(fileUrl);
     };
 
     fetchFile();
   }, [documentId, sessionId.access_token]);
 
+  const handleLoadSuccess = (pdf) => {
+    setTotalPages(pdf.numPages);
+    setCurrentPage(1);
+  };
+
+  const handleLoadError = () => {
+    toast.error("There was an error loading your PDF");
+    return "Error loading PDF";
+  };
+
   return (
     <div>
-      <h3>Viewer</h3>
       <Document
+        onLoadSuccess={handleLoadSuccess}
+        noData={<p>Loading...</p>}
+        error={<p>Error Loading Document</p>}
         file={documentUrl}
-        onLoadError={(error) => console.error("PDF load error:", error)}
+        onLoadError={handleLoadError}
       >
-        <Page pageNumber={1} />
+        <Page pageNumber={1} renderTextLayer renderAnnotationLayer />
       </Document>
+      {totalPages && (
+        <DocumentNavigation
+          totalDocumentPages={totalPages}
+          currentDocumentPage={currentPage}
+        />
+      )}
     </div>
   );
 };

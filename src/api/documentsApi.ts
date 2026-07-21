@@ -52,13 +52,12 @@ export const getDocumentFile = async (documentId: string, accessToken: string) =
 
       const result = await response.blob()
 
-console.log("b", result)
 
       return result
     
   } catch (error) {
 
-    return error
+    console.error(error instanceof Error ? error.message : "Something went wrong")
     
   }
 
