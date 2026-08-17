@@ -3,7 +3,13 @@ import { useState } from "react";
 import type { DocumentSearchItem } from "../pages/HomePage";
 import { useRouteLoaderData } from "react-router";
 import { toast } from "sonner";
-import type { SimilarChunks, RagAnswer } from "../../server/src/types/chunks";
+import type {
+  SimilarChunks,
+  RagAnswerShape,
+} from "../../server/src/types/chunks";
+import RagAnswer from "./RagAnswer";
+import { RiSendInsFill } from "react-icons/ri";
+import { OrbitProgress } from "react-loading-indicators";
 
 // interface Props {
 //   selectedDocument: DocumentSearchItem;
@@ -14,7 +20,8 @@ import type { SimilarChunks, RagAnswer } from "../../server/src/types/chunks";
 const DocumentSearch = ({ selectedDocument }: Props) => {
   const sessionData = useRouteLoaderData("protected");
   const [userQuery, setUserQuery] = useState("");
-  const [ragResponse, setRagResponse] = useState<RagAnswer | null>(null);
+  const [ragResponse, setRagResponse] = useState<RagAnswerShape | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUserInput = (userInput: string): void => {
     setUserQuery(userInput);
@@ -27,6 +34,7 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/documents/${document_id}/query`,
@@ -45,22 +53,48 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
       return;
     }
     const result = await response.json();
+    setIsLoading(false);
+
     setRagResponse(result);
     //swap this out with a loading indicator
     toast.success("Query Completed");
   };
 
   return (
-    <div>
-      <h3>What do you want to know about {document_name}</h3>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          placeholder="Ask questions about your selected document"
-          onChange={(e) => handleUserInput(e.target.value)}
-          value={userQuery}
-        />
-        <button type="submit">Ask</button>
-      </form>
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-scroll">
+        {ragResponse ? (
+          <RagAnswer ragResponse={ragResponse} />
+        ) : (
+          <p>
+            {isLoading ? (
+              <OrbitProgress
+                color={["#32cd32", "#327fcd", "#cd32cd", "#cd8032"]}
+              />
+            ) : (
+              "Your answer will appear here"
+            )}
+          </p>
+        )}
+      </div>
+      <div className=" flex flex-col">
+        <h3 className="font-bold">
+          What do you want to know about {document_name}
+        </h3>
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className="border rounded-lg flex items-center justify-between mx-8 my-4 p-2">
+            <textarea
+              className="w-9/10 items-center"
+              placeholder="Ask questions about your selected document"
+              onChange={(e) => handleUserInput(e.target.value)}
+              value={userQuery}
+            />
+            <button disabled={isLoading} type="submit">
+              <RiSendInsFill />
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

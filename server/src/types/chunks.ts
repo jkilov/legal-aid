@@ -7,7 +7,7 @@ export type SimilarChunks = {
 }
 
 
-export type RagAnswer = {
+export type RagAnswerShape = {
     answer: string,
     supportingChunks: SimilarChunks []
 }

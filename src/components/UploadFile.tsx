@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-
+import { Document, Thumbnail } from "react-pdf";
 import { useRouteLoaderData } from "react-router";
 import type { AllDocuments } from "../../shared/types";
 import { getDocumentsLibrary } from "../api/documentsApi";
@@ -10,10 +10,12 @@ interface Props {
 }
 
 const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectFileUrl, setSelectedFileUrl] = useState(null);
 
   const sessionData = useRouteLoaderData("protected");
 
+  //TODO: refactor below - logic is too large
   const handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -31,7 +33,7 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
       toast.error("Incompatible file type, Only .pdf, .doc and .docx accepted");
       return;
     }
-    setUploadedFile(file);
+    setSelectedFile(file);
     toast.success(`${file.name} selected`);
   };
 
@@ -86,36 +88,63 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
     runDocumentList();
   }, [sessionData.access_token]);
 
-  return (
-    <div className="flex flex-col">
-      <h2>Upload Legal document</h2>
-      <h3>Placeholder</h3>
-      <h3>Description box</h3>
+  useEffect(() => {
+    if (!selectedFile) {
+      setSelectedFileUrl(null);
+      return;
+    }
 
-      <label>
-        Upload Document
-        <input
-          className="hidden"
-          type="file"
-          name="docUpload"
-          id="docUpload"
-          accept=".doc, .docx, .pdf"
-          onChange={handleSelectFile}
-        />
-      </label>
-      <p>{uploadedFile?.name ?? ""}</p>
-      <button
-        type="button"
-        onClick={() => {
-          if (!uploadedFile) {
-            toast.error("Please select a file first");
-            return;
-          }
-          handleUploadFile(sessionData.access_token, uploadedFile);
-        }}
-      >
-        Upload
-      </button>
+    const documentUrl = URL.createObjectURL(selectedFile);
+    setSelectedFileUrl(documentUrl);
+
+    return () => URL.revokeObjectURL(documentUrl);
+  }, [selectedFile]);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2>Upload Legal document</h2>
+      {selectFileUrl && (
+        <div className="flex flex-col items-center gap-4">
+          <Document file={selectFileUrl} className="">
+            <Thumbnail pageNumber={1} width={300} />
+          </Document>
+          <p className="font-bold">{selectedFile?.name ?? ""}</p>
+          <textarea
+            className="border resize-none rounded-xl"
+            placeholder="Add a document description"
+            rows={5}
+            cols={50}
+          />
+        </div>
+      )}
+
+      <div className="flex justify-between pt-1">
+        <label>
+          Choose Document{" "}
+          <input
+            className="hidden"
+            type="file"
+            name="docUpload"
+            id="docUpload"
+            accept=".doc, .docx, .pdf"
+            onChange={handleSelectFile}
+          />
+        </label>
+        {selectedFile && (
+          <button
+            type="button"
+            onClick={() => {
+              if (!selectedFile) {
+                toast.error("Please select a file first");
+                return;
+              }
+              handleUploadFile(sessionData.access_token, selectedFile);
+            }}
+          >
+            Upload
+          </button>
+        )}
+      </div>
     </div>
   );
 };

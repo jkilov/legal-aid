@@ -53,7 +53,7 @@ const DocumentLibrary = () => {
   }, [session.access_token]);
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-around">
       <UploadFile onUpdateDocumentLibrary={handleUpdateDocumentLibrary} />
       <DocumentList
         documents={documentData}

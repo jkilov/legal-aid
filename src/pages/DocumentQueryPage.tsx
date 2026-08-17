@@ -29,8 +29,7 @@ const DocumentQueryPage = () => {
         )}
       </section>
 
-      <main className="flex flex-col justify-center items-center flex-3">
-        <RagAnswer />
+      <main className="flex flex-col items-center flex-3">
         <DocumentSearch />
       </main>
     </div>
