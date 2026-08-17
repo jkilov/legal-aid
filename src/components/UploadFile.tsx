@@ -12,6 +12,7 @@ interface Props {
 const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectFileUrl, setSelectedFileUrl] = useState(null);
+  const [fileDescription, setFileDescription] = useState(null);
 
   const sessionData = useRouteLoaderData("protected");
 
@@ -40,6 +41,7 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
   const handleUploadFile = async (accessToken: string, file: File) => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("description", fileDescription);
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/documents/upload`,
@@ -60,6 +62,7 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
       toast.success("Successfully uploaded " + file.name);
       const documentLibrary = await getDocumentsLibrary(accessToken);
       onUpdateDocumentLibrary(documentLibrary);
+      setSelectedFile(null);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : " something went wrong"
@@ -106,14 +109,15 @@ const UploadFile = ({ onUpdateDocumentLibrary }: Props) => {
       {selectFileUrl && (
         <div className="flex flex-col items-center gap-4">
           <Document file={selectFileUrl} className="">
-            <Thumbnail pageNumber={1} width={300} />
+            <Thumbnail pageNumber={1} width={250} />
           </Document>
           <p className="font-bold">{selectedFile?.name ?? ""}</p>
           <textarea
-            className="border resize-none rounded-xl"
+            className="border resize-none rounded-xl p-4"
             placeholder="Add a document description"
-            rows={5}
+            rows={4}
             cols={50}
+            onChange={(e) => setFileDescription(e.target.value)}
           />
         </div>
       )}

@@ -1,7 +1,7 @@
 import {supabase} from "../config/supabase"
 import {sendDocumentStatus} from "../src/webSocket"
 
-export const handleUploadDocument = async(documentName: string, file: Express.Multer.File, userId: string ) => {
+export const handleUploadDocument = async(documentName: string, file: Express.Multer.File, description: string, userId: string ) => {
 
   
 const allowedFileTypes = [
@@ -27,7 +27,8 @@ const allowedFileTypes = [
         user_id: userId,
         document_name: documentName,
         document_path: filePath,
-        status: "uploading"
+        status: "uploading", 
+        description
     })
     .select()
     .single()

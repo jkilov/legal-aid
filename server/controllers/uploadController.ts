@@ -29,11 +29,13 @@ export const uploadDocument = async (
       
       const userId = req.user.id;
       const file = req.file;
+      const description = req.body.description
 
       if (!userId) return next({status: 400, message: "Cannot find user Id"})
       if (!file) return next({status: 400, message: "No file found"})
   
       const fileName = file.originalname;
+
   
       try {
 
@@ -44,7 +46,7 @@ export const uploadDocument = async (
         filePath,
         status,
         createdAt,
-      } = await handleUploadDocument(fileName, file, userId);
+      } = await handleUploadDocument(fileName, file, description, userId);
   
         chunkDocumentService(documentId, filePath);
   

@@ -53,13 +53,17 @@ const DocumentLibrary = () => {
   }, [session.access_token]);
 
   return (
-    <div className="flex justify-around">
-      <UploadFile onUpdateDocumentLibrary={handleUpdateDocumentLibrary} />
-      <DocumentList
-        documents={documentData}
-        onUpdateDocumentLibrary={handleUpdateDocumentLibrary}
-        onSelectDocument={handleSelectDocument}
-      />
+    <div className="flex  justify-around">
+      <div>
+        <UploadFile onUpdateDocumentLibrary={handleUpdateDocumentLibrary} />
+      </div>
+      <div>
+        <DocumentList
+          documents={documentData}
+          onUpdateDocumentLibrary={handleUpdateDocumentLibrary}
+          onSelectDocument={handleSelectDocument}
+        />
+      </div>
     </div>
   );
 };
