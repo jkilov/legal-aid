@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import type { DocumentSearchItem } from "../pages/HomePage";
 import { useRouteLoaderData } from "react-router";
@@ -11,13 +11,18 @@ import RagAnswer from "./RagAnswer";
 import { RiSendInsFill } from "react-icons/ri";
 import { OrbitProgress } from "react-loading-indicators";
 
+interface Props {
+  documentId: string | null;
+  documentName: string | null;
+}
+
 // interface Props {
 //   selectedDocument: DocumentSearchItem;
 // }
 
 //TODO: when using this components we need to pass the docID as url params for the page
 
-const DocumentSearch = ({ selectedDocument }: Props) => {
+const DocumentSearch = ({ documentName, documentId }: Props) => {
   const sessionData = useRouteLoaderData("protected");
   const [userQuery, setUserQuery] = useState("");
   const [ragResponse, setRagResponse] = useState<RagAnswerShape | null>(null);
@@ -27,17 +32,12 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
     setUserQuery(userInput);
   };
 
-  //HACK:
-  const document_id = "d278c33d-a200-4fe7-a3d3-83f7de41c55a";
-  const document_name = "fake_contract_chunking_test.pdf";
-  //HACK: - use actual passed props later
-
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/documents/${document_id}/query`,
+      `${import.meta.env.VITE_API_URL}/documents/${documentId}/query`,
       {
         method: "POST",
         headers: {
@@ -79,7 +79,9 @@ const DocumentSearch = ({ selectedDocument }: Props) => {
       </div>
       <div className=" flex flex-col">
         <h3 className="font-bold">
-          What do you want to know about {document_name}
+          {documentName
+            ? `What do you want to know about ${documentName}`
+            : "Select a document to get started"}
         </h3>
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="border rounded-lg flex items-center justify-between mx-8 my-4 p-2">

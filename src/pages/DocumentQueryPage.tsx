@@ -4,13 +4,20 @@ import DocumentSearch from "../components/DocumentSearch";
 import RagAnswer from "../components/RagAnswer";
 import DocumentViewer from "../components/DocumentViewer";
 import type { AllDocuments } from "../../shared/types";
+import { useSearchParams } from "react-router";
 
 const DocumentQueryPage = () => {
-  const [selectedDocument, setSelectedDocument] = useState<AllDocuments>();
+  const [selectedDocument, setSelectedDocument] = useState<AllDocuments | null>(
+    null
+  );
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSelectDocument = (document: AllDocuments) => {
     setSelectedDocument(document);
+    setSearchParams({ id: document.document_id });
   };
+
+  const id = searchParams.get("id");
 
   return (
     <div className="flex flex-row h-full">
@@ -30,10 +37,16 @@ const DocumentQueryPage = () => {
       </section>
 
       <main className="flex flex-col items-center flex-3">
-        <DocumentSearch />
+        <DocumentSearch
+          key={id}
+          documentId={id}
+          documentName={selectedDocument?.document_name}
+        />
       </main>
     </div>
   );
 };
 
 export default DocumentQueryPage;
+
+//TODO: Why is this page loading when im open on the document library page

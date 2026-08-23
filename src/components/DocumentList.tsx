@@ -2,6 +2,7 @@ import { useRouteLoaderData } from "react-router";
 import type { AllDocuments } from "../../shared/types";
 import { toast } from "sonner";
 import { getDocumentsLibrary } from "../api/documentsApi";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 interface Props {
   documents: AllDocuments[];
@@ -46,17 +47,26 @@ const DocumentList = ({
   };
 
   return (
-    <div>
+    <div className="flex  flex-col ">
       <h2>Uploaded Document List</h2>
+
       {documents.map(
         ({ document_id: documentId, document_name: documentName, status }) => (
-          <div key={documentId}>
-            <h2 onClick={() => onSelectDocument(documentId, documentName)}>
-              {documentName}:{" "}
-              <span onClick={() => handleDelete(documentId)}>delete</span>
-            </h2>
-            <h2>{status}</h2>
-          </div>
+          <ul
+            key={documentId}
+            className="grid grid-cols-[2fr_1fr_1fr]  w-[550px] mx-auto my-2 py-2"
+          >
+            <li
+              onClick={() => onSelectDocument(documentId, documentName)}
+              className="font-bold text-left truncate"
+            >
+              {documentName}
+            </li>
+            <li>{status}</li>
+            <li className="justify-self-center">
+              <AiOutlineCloseCircle onClick={() => handleDelete(documentId)} />
+            </li>
+          </ul>
         )
       )}
     </div>

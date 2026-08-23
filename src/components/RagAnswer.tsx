@@ -13,7 +13,7 @@ const RagAnswer = ({ ragResponse }: Props) => {
             <h2>Response:</h2> <p>{ragResponse.answer}</p>
             <h3>Supporting Citations:</h3>
             {ragResponse.supportingChunks.map((citation) => (
-              <div>
+              <div key={citation.chunk_id}>
                 <p>{citation.chunk_order}</p>
                 <p>{citation.chunk}</p>
                 <p>{citation.chunk_id}</p>
