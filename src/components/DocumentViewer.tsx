@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { getDocumentFile } from "../api/documentsApi";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
@@ -22,6 +22,8 @@ const DocumentViewer = ({ documentId }: Props) => {
   const [currentPage, setCurrentPage] = useState(null);
 
   const sessionId = useRouteLoaderData("protected");
+
+  const pageRef = useRef(null);
 
   const resetDocument = () => {
     setTotalPages(null);
@@ -55,9 +57,19 @@ const DocumentViewer = ({ documentId }: Props) => {
     setCurrentPage((prev) => prev + change);
   };
 
+  const handleSpanAccess = () => {
+    if (pageRef.current) {
+      const divs = pageRef.current.querySelectorAll("div");
+      const textDiv = divs[2];
+      const spans = textDiv.querySelectorAll("span");
+
+      console.log("div", spans);
+    }
+  };
+
   return (
     <div className="relative h-full">
-      <div className="h-full overflow-y-auto">
+      <div className="h-full overflow-y-auto" ref={pageRef}>
         <Document
           onLoadSuccess={handleLoadSuccess}
           noData={<p>Loading...</p>}
@@ -68,6 +80,7 @@ const DocumentViewer = ({ documentId }: Props) => {
           <Page
             pageNumber={currentPage}
             renderTextLayer
+            onRenderTextLayerSuccess={handleSpanAccess}
             renderAnnotationLayer
           />
         </Document>
