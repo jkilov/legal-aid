@@ -63,7 +63,7 @@ const DocumentViewer = ({ documentId }: Props) => {
       const textDiv = divs[2];
       const spans = textDiv.querySelectorAll("span");
 
-      console.log("div", spans);
+      const spanArr = Array.from(spans).map((span) => span.textContent);
     }
   };
 
