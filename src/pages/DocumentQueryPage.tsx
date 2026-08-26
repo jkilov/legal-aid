@@ -10,6 +10,7 @@ const DocumentQueryPage = () => {
   const [selectedDocument, setSelectedDocument] = useState<AllDocuments | null>(
     null
   );
+  const [selectedCitationId, setSelectedCitationId] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSelectDocument = (document: AllDocuments) => {
@@ -18,6 +19,11 @@ const DocumentQueryPage = () => {
   };
 
   const id = searchParams.get("id");
+
+  const handleUserSelectedCitation = (chunkId: string): void => {
+    setSelectedCitationId(chunkId);
+    console.log("CI", chunkId);
+  };
 
   return (
     <div className="flex flex-row h-full">
@@ -30,7 +36,10 @@ const DocumentQueryPage = () => {
 
       <section className="relative flex-4 h-full overflow-hidden border-r">
         {selectedDocument ? (
-          <DocumentViewer documentId={selectedDocument.document_id} />
+          <DocumentViewer
+            documentId={selectedDocument.document_id}
+            selectedCitationId={selectedCitationId}
+          />
         ) : (
           "No Document Selected"
         )}
@@ -41,6 +50,7 @@ const DocumentQueryPage = () => {
           key={id}
           documentId={id}
           documentName={selectedDocument?.document_name}
+          onSelectCitation={handleUserSelectedCitation}
         />
       </main>
     </div>

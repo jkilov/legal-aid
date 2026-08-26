@@ -2,23 +2,30 @@ import type { RagAnswerShape } from "../../server/src/types/chunks";
 
 interface Props {
   ragResponse: RagAnswerShape;
+  onSelectCitation: (chunkId: string) => void;
 }
 
-const RagAnswer = ({ ragResponse }: Props) => {
+const RagAnswer = ({ ragResponse, onSelectCitation }: Props) => {
   return (
     <div>
       <div>
         {ragResponse && (
           <div>
-            <h2>Response:</h2> <p>{ragResponse.answer}</p>
-            <h3>Supporting Citations:</h3>
-            {ragResponse.supportingChunks.map((citation) => (
-              <div key={citation.chunk_id}>
-                <p>{citation.chunk_order}</p>
-                <p>{citation.chunk}</p>
-                <p>{citation.chunk_id}</p>
-              </div>
-            ))}
+            <div>
+              <h2>Response:</h2> <p>{ragResponse.answer}</p>
+              <h3>Supporting Citations:</h3>
+            </div>
+            <div>
+              {ragResponse.supportingChunks.map((citation, index) => (
+                <p
+                  key={citation.chunk_id}
+                  className="italic"
+                  onClick={() => onSelectCitation(citation.chunk)}
+                >
+                  See citation {index + 1}
+                </p>
+              ))}
+            </div>
           </div>
         )}
       </div>

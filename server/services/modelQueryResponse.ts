@@ -29,8 +29,8 @@ SOURCE POLICY
 ANSWER POLICY
 - Directly answer the user's question.
 - Include only information relevant to that question.
-- Cite every material factual claim using [Citation X], where X is the
- chunk's order attribute. 
+- Cite every material factual claim but do not return it in the response.
+- when returning the answer and the chunks used, ensure that the chunks are sequential so the document and citations read top down.
  - Return those same order numbers in sourceChunkOrders.
 - Do not cite a chunk unless it supports the claim.
 - When chunks conflict, clearly describe the conflict and cite both.

@@ -14,6 +14,7 @@ import { OrbitProgress } from "react-loading-indicators";
 interface Props {
   documentId: string | null;
   documentName: string | null;
+  onSelectCitation: (chunkId: string) => void;
 }
 
 // interface Props {
@@ -22,7 +23,11 @@ interface Props {
 
 //TODO: when using this components we need to pass the docID as url params for the page
 
-const DocumentSearch = ({ documentName, documentId }: Props) => {
+const DocumentSearch = ({
+  documentName,
+  documentId,
+  onSelectCitation,
+}: Props) => {
   const sessionData = useRouteLoaderData("protected");
   const [userQuery, setUserQuery] = useState("");
   const [ragResponse, setRagResponse] = useState<RagAnswerShape | null>(null);
@@ -64,7 +69,10 @@ const DocumentSearch = ({ documentName, documentId }: Props) => {
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-scroll">
         {ragResponse ? (
-          <RagAnswer ragResponse={ragResponse} />
+          <RagAnswer
+            ragResponse={ragResponse}
+            onSelectCitation={onSelectCitation}
+          />
         ) : (
           <p>
             {isLoading ? (
