@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { AllDocuments } from "../../shared/types";
 import { useRouteLoaderData } from "react-router";
 import { shortenName } from "../helper/shortenName";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 
 interface Props {
   onDocumentSelection: (document: AllDocuments) => void;
@@ -13,6 +14,7 @@ const Documents = ({ onDocumentSelection }: Props) => {
   const [selectedDocument, SetSelectedDocument] = useState<AllDocuments>(
     {} as AllDocuments
   );
+  const [descriptionSelected, setDescriptionSelected] = useState(false);
 
   const session = useRouteLoaderData("protected");
 
@@ -21,6 +23,11 @@ const Documents = ({ onDocumentSelection }: Props) => {
     onDocumentSelection(document);
   };
 
+  const handleDescriptionSelected = (boolean: boolean) => {
+    setDescriptionSelected(boolean);
+  };
+
+  console.log(descriptionSelected);
   useEffect(() => {
     const retrieveAllDocuments = async () => {
       const response = await fetch(
@@ -54,9 +61,24 @@ const Documents = ({ onDocumentSelection }: Props) => {
           }`}
           onClick={() => handleSelectDocument(document)}
         >
-          <p>{shortenName(document.document_name)}</p>
-          <p className="text-xs">Uploaded {document.created_at}</p>
-          <p className="text-xs">{document.status}</p>
+          <div className="flex-col">
+            <p>{shortenName(document.document_name)}</p>
+            <p className="text-xs">Uploaded {document.created_at}</p>
+            <div className="flex justify-between">
+              <p className="text-xs">{document.status}</p>
+              <div className="relative ">
+                <IoMdInformationCircleOutline
+                  onMouseEnter={() => handleDescriptionSelected(true)}
+                  onMouseLeave={() => handleDescriptionSelected(false)}
+                />
+                {descriptionSelected && (
+                  <p className="absolute left-3 top-3 rounded-lg p-3 text-xs bg-amber-50 shadow-xl text-black w-2xs z-100 ">
+                    {document.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       ))}
     </div>

@@ -3,6 +3,7 @@ export type AllDocuments = {
     document_id: string,
     document_name: string,
     document_path: string,
+    description: string,
     status: string,
     created_at: string
 

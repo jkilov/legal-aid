@@ -50,7 +50,7 @@ export const chunkDocumentService = async(documentId: string, filePath: string) 
         }
 
         //creates document chunks
-        const {chunkCount} = await textChunking(currentUserId, documentId, text, 300)
+        const {chunkCount} = await textChunking(currentUserId, documentId, text, 100)
 
 
 
